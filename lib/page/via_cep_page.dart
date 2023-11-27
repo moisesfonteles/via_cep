@@ -35,7 +35,7 @@ class _SearchAddressState extends State<SearchAddress> {
       builder: (context, snapshot) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Search Addresss"),
+            title: const Text("Search Address"),
           ),
           body: addressForm(snapshot.data, context),
         );
@@ -73,7 +73,13 @@ class _SearchAddressState extends State<SearchAddress> {
           if(address?.cep != null && _controller.cepController.text != "") ...{
             addressFound(address)
           } else if(address?.cep == null && _controller.cepController.text != "") ...{
-            const Text("CEP não existe !")
+            const Text("CEP não existe !"),
+            Center(
+            child: TextButton(
+              onPressed: () => _controller.clearRequest(address!),
+              child: const Text("LIMPAR")
+            ),
+        ),
           }
           else ...{
             Container()
