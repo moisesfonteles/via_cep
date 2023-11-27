@@ -37,13 +37,13 @@ class _SearchAddressState extends State<SearchAddress> {
           appBar: AppBar(
             title: const Text("Search Addresss"),
           ),
-          body: addressForm(snapshot.data),
+          body: addressForm(snapshot.data, context),
         );
       }
     );
   }
 
-  Widget addressForm(Address? address) {
+  Widget addressForm(Address? address, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -56,7 +56,7 @@ class _SearchAddressState extends State<SearchAddress> {
             decoration: const InputDecoration(border: OutlineInputBorder(), labelText: "Digite seu CEP", hintText: "00000-000"),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly, _controller.maskFormatter],
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onEditingComplete: () => _controller.cepRequest(),
+            onEditingComplete: () => _controller.cepRequest(context),
           ),
           const SizedBox(height: 16,),
           StreamBuilder<bool>(
@@ -64,7 +64,7 @@ class _SearchAddressState extends State<SearchAddress> {
             builder: (context, snapshot) {
               return ElevatedButton(
                 style: ElevatedButton.styleFrom(fixedSize:  const Size(double.maxFinite, 62)),
-                onPressed:() => _controller.cepRequest(),
+                onPressed:() => _controller.cepRequest(context),
                 child: snapshot.data == true ? const CircularProgressIndicator(color: Colors.white,) : const Text("PESQUISAR")
               );
             }

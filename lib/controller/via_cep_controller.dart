@@ -35,7 +35,8 @@ class SearchAddressController {
     return null;
   }
 
-  void cepRequest() async {
+  void cepRequest(BuildContext context) async {
+    FocusScope.of(context).unfocus();
     requesting = true;
     requestingStream.sink.add(requesting);
     Uri uri = Uri.https("viacep.com.br" , "/ws/${cepController.text}/json/");
