@@ -44,47 +44,50 @@ class _SearchAddressState extends State<SearchAddress> {
   }
 
   Widget addressForm(Address? address, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          TextFormField(
-            controller: _controller.cepController,
-            validator:(String? value) => _controller.validatorCep(value!),
-            textInputAction: TextInputAction.search,
-            decoration: const InputDecoration(border: OutlineInputBorder(), labelText: "Digite seu CEP", hintText: "00000-000"),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly, _controller.maskFormatter],
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onEditingComplete: () => _controller.cepRequest(context),
-          ),
-          const SizedBox(height: 16,),
-          StreamBuilder<bool>(
-            stream: _controller.requestingStream.stream,
-            builder: (context, snapshot) {
-              return ElevatedButton(
-                style: ElevatedButton.styleFrom(fixedSize:  const Size(double.maxFinite, 62)),
-                onPressed:() => _controller.cepRequest(context),
-                child: snapshot.data == true ? const CircularProgressIndicator(color: Colors.white,) : const Text("PESQUISAR")
-              );
-            }
-          ),
-          const SizedBox(height: 16,),
-          if(address?.cep != null && _controller.cepController.text != "") ...{
-            addressFound(address)
-          } else if(address?.cep == null && _controller.cepController.text != "") ...{
-            const Text("CEP não existe !"),
-            Center(
-            child: TextButton(
-              onPressed: () => _controller.clearRequest(address!),
-              child: const Text("LIMPAR")
+    return Form(
+      key: _controller.formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            TextFormField(
+              controller: _controller.cepController,
+              validator:(String? value) => _controller.validatorCep(value!),
+              textInputAction: TextInputAction.search,
+              decoration: const InputDecoration(border: OutlineInputBorder(), labelText: "Digite seu CEP", hintText: "00000-000"),
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly, _controller.maskFormatter],
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              onEditingComplete: () => _controller.cepRequest(context),
             ),
+            const SizedBox(height: 16,),
+            StreamBuilder<bool>(
+              stream: _controller.requestingStream.stream,
+              builder: (context, snapshot) {
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(fixedSize:  const Size(double.maxFinite, 62)),
+                  onPressed:() => _controller.cepRequest(context),
+                  child: snapshot.data == true ? const CircularProgressIndicator(color: Colors.white,) : const Text("PESQUISAR")
+                );
+              }
+            ),
+            const SizedBox(height: 16,),
+            if(address?.cep != null && _controller.cepController.text != "") ...{
+              addressFound(address)
+            } else if(address?.cep == null && _controller.cepController.text != "") ...{
+              const Text("CEP não existe !"),
+              Center(
+                child: TextButton(
+                  onPressed: () => _controller.clearRequest(address!),
+                  child: const Text("LIMPAR")
+                ),
+              ),
+            }
+            else ...{
+              Container()
+            }
+          ],
         ),
-          }
-          else ...{
-            Container()
-          }
-        ],
       ),
     );
   }

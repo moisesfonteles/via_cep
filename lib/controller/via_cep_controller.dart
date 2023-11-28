@@ -17,6 +17,7 @@ class SearchAddressController {
   final addressStream = BehaviorSubject<Address>();
   final requestingStream = BehaviorSubject<bool>();
 
+  final formKey = GlobalKey<FormState>();
   TextEditingController cepController = TextEditingController();
 
   bool requesting = false;
@@ -29,23 +30,27 @@ class SearchAddressController {
 
   String? validatorCep(String value) {
     int count = value.length;
-    if(value.isEmpty || count < 9){
-      return "Telefone obrigatório";
+    if(value.isEmpty){
+      return "CEP vazio";
+    } else if(count < 9){
+      return "CEP incompleto";
     }
     return null;
   }
 
   void cepRequest(BuildContext context) async {
-    FocusScope.of(context).unfocus();
-    requesting = true;
-    requestingStream.sink.add(requesting);
-    Uri uri = Uri.https("viacep.com.br" , "/ws/${cepController.text}/json/");
-    final response = await get(uri);
-    Map respondeAddress = (jsonDecode(response.body));
-    Address address = Address.fromJson(respondeAddress);
-    addressStream.sink.add(address);
-    requesting = false;
-    requestingStream.sink.add(requesting);
+    if(formKey.currentState?.validate() ?? false) {
+      FocusScope.of(context).unfocus();
+      requesting = true;
+      requestingStream.sink.add(requesting);
+      Uri uri = Uri.https("viacep.com.br" , "/ws/${cepController.text}/json/");
+      final response = await get(uri);
+      Map respondeAddress = (jsonDecode(response.body));
+      Address address = Address.fromJson(respondeAddress);
+      addressStream.sink.add(address);
+      requesting = false;
+      requestingStream.sink.add(requesting);
+    }
   }
 
   void clearRequest(Address address) {
